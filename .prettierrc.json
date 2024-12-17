@@ -1,0 +1,16 @@
+{
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": false,
+  "singleQuote": true,
+  "printWidth": 120,
+  "jsxSingleQuote": true,
+  "overrides": [
+    {
+      "files": ["**/routeTree.gen.ts"],
+      "options": {
+        "prettier-ignore": true
+      }
+    }
+  ]
+}
