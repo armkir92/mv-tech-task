@@ -3,6 +3,9 @@ import { getContacts } from '../queries/getContacts'
 import { getRouteApi, Link, Outlet } from '@tanstack/react-router'
 import { getContactDetails } from '../queries/getContactDetails'
 import { Button } from './ui/Button'
+import { useState } from 'react'
+import { Modal } from './ui/Modal'
+import { useDeleteContact } from '../hooks/useDeleteContact'
 
 const route = getRouteApi('/contacts/$contactId')
 
@@ -11,6 +14,13 @@ export function ContactDetails() {
   const {
     data: { contact },
   } = useSuspenseQuery(getContactDetails(contactId))
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const mutation = useDeleteContact(contactId)
+
+  const handleDelete = async () => {
+    await mutation.mutateAsync()
+    setIsModalOpen(false)
+  }
 
   return (
     <div className='min-h-[calc(100vh-3rem)] h-full bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
@@ -24,12 +34,15 @@ export function ContactDetails() {
             <Link to='/contacts/edit/$contactId' params={{ contactId }}>
               <Button>Edit</Button>
             </Link>
-            <Button variant='warn' onClick={() => alert('Delete functionality not implemented yet')}>
+            <Button variant='warn' onClick={() => setIsModalOpen(true)}>
               Delete
             </Button>
           </div>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleDelete} title='Confirm Delete'>
+        Are you sure you want to delete this contact?
+      </Modal>
     </div>
   )
 }
