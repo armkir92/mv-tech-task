@@ -14,7 +14,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as ContactsImport } from './routes/contacts'
 import { Route as IndexImport } from './routes/index'
 import { Route as ContactsIndexImport } from './routes/contacts.index'
+import { Route as ContactsCreateImport } from './routes/contacts.create'
 import { Route as ContactsContactIdImport } from './routes/contacts.$contactId'
+import { Route as ContactsEditContactIdImport } from './routes/contacts.edit.$contactId'
 
 // Create/Update Routes
 
@@ -36,9 +38,21 @@ const ContactsIndexRoute = ContactsIndexImport.update({
   getParentRoute: () => ContactsRoute,
 } as any)
 
+const ContactsCreateRoute = ContactsCreateImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => ContactsRoute,
+} as any)
+
 const ContactsContactIdRoute = ContactsContactIdImport.update({
   id: '/$contactId',
   path: '/$contactId',
+  getParentRoute: () => ContactsRoute,
+} as any)
+
+const ContactsEditContactIdRoute = ContactsEditContactIdImport.update({
+  id: '/edit/$contactId',
+  path: '/edit/$contactId',
   getParentRoute: () => ContactsRoute,
 } as any)
 
@@ -67,11 +81,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactsContactIdImport
       parentRoute: typeof ContactsImport
     }
+    '/contacts/create': {
+      id: '/contacts/create'
+      path: '/create'
+      fullPath: '/contacts/create'
+      preLoaderRoute: typeof ContactsCreateImport
+      parentRoute: typeof ContactsImport
+    }
     '/contacts/': {
       id: '/contacts/'
       path: '/'
       fullPath: '/contacts/'
       preLoaderRoute: typeof ContactsIndexImport
+      parentRoute: typeof ContactsImport
+    }
+    '/contacts/edit/$contactId': {
+      id: '/contacts/edit/$contactId'
+      path: '/edit/$contactId'
+      fullPath: '/contacts/edit/$contactId'
+      preLoaderRoute: typeof ContactsEditContactIdImport
       parentRoute: typeof ContactsImport
     }
   }
@@ -81,12 +109,16 @@ declare module '@tanstack/react-router' {
 
 interface ContactsRouteChildren {
   ContactsContactIdRoute: typeof ContactsContactIdRoute
+  ContactsCreateRoute: typeof ContactsCreateRoute
   ContactsIndexRoute: typeof ContactsIndexRoute
+  ContactsEditContactIdRoute: typeof ContactsEditContactIdRoute
 }
 
 const ContactsRouteChildren: ContactsRouteChildren = {
   ContactsContactIdRoute: ContactsContactIdRoute,
+  ContactsCreateRoute: ContactsCreateRoute,
   ContactsIndexRoute: ContactsIndexRoute,
+  ContactsEditContactIdRoute: ContactsEditContactIdRoute,
 }
 
 const ContactsRouteWithChildren = ContactsRoute._addFileChildren(
@@ -97,13 +129,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contacts': typeof ContactsRouteWithChildren
   '/contacts/$contactId': typeof ContactsContactIdRoute
+  '/contacts/create': typeof ContactsCreateRoute
   '/contacts/': typeof ContactsIndexRoute
+  '/contacts/edit/$contactId': typeof ContactsEditContactIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contacts/$contactId': typeof ContactsContactIdRoute
+  '/contacts/create': typeof ContactsCreateRoute
   '/contacts': typeof ContactsIndexRoute
+  '/contacts/edit/$contactId': typeof ContactsEditContactIdRoute
 }
 
 export interface FileRoutesById {
@@ -111,15 +147,35 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/contacts': typeof ContactsRouteWithChildren
   '/contacts/$contactId': typeof ContactsContactIdRoute
+  '/contacts/create': typeof ContactsCreateRoute
   '/contacts/': typeof ContactsIndexRoute
+  '/contacts/edit/$contactId': typeof ContactsEditContactIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contacts' | '/contacts/$contactId' | '/contacts/'
+  fullPaths:
+    | '/'
+    | '/contacts'
+    | '/contacts/$contactId'
+    | '/contacts/create'
+    | '/contacts/'
+    | '/contacts/edit/$contactId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contacts/$contactId' | '/contacts'
-  id: '__root__' | '/' | '/contacts' | '/contacts/$contactId' | '/contacts/'
+  to:
+    | '/'
+    | '/contacts/$contactId'
+    | '/contacts/create'
+    | '/contacts'
+    | '/contacts/edit/$contactId'
+  id:
+    | '__root__'
+    | '/'
+    | '/contacts'
+    | '/contacts/$contactId'
+    | '/contacts/create'
+    | '/contacts/'
+    | '/contacts/edit/$contactId'
   fileRoutesById: FileRoutesById
 }
 
@@ -154,15 +210,25 @@ export const routeTree = rootRoute
       "filePath": "contacts.tsx",
       "children": [
         "/contacts/$contactId",
-        "/contacts/"
+        "/contacts/create",
+        "/contacts/",
+        "/contacts/edit/$contactId"
       ]
     },
     "/contacts/$contactId": {
       "filePath": "contacts.$contactId.tsx",
       "parent": "/contacts"
     },
+    "/contacts/create": {
+      "filePath": "contacts.create.tsx",
+      "parent": "/contacts"
+    },
     "/contacts/": {
       "filePath": "contacts.index.tsx",
+      "parent": "/contacts"
+    },
+    "/contacts/edit/$contactId": {
+      "filePath": "contacts.edit.$contactId.tsx",
       "parent": "/contacts"
     }
   }

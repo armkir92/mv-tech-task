@@ -1,5 +1,4 @@
-import { createFileRoute, ContextAsyncReturnType } from '@tanstack/react-router'
-import { getContacts } from '../queries/getContacts'
+import { createFileRoute } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/react-query'
 
 export interface ContextQueryClient {

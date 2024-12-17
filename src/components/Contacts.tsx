@@ -2,34 +2,31 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { getContacts } from '../queries/getContacts'
 import { Link, Outlet } from '@tanstack/react-router'
 import { useState } from 'react'
+import { Input } from './ui/Input'
+import { Button } from './ui/Button'
 
 export function Contacts() {
   const { data: contacts } = useSuspenseQuery(getContacts)
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredContacts = contacts?.filter((contact) =>
+  const filteredContacts = (contacts || []).filter((contact) =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
   )
 
   return (
-    <div className='min-h-screen flex-1 flex overflow-auto'>
-      <div className='min-w-56 bg-slate-100 p-4'>
-        <div className='pb-2 border-b-2 flex flex-row gap-2 items-center justify-center'>
-          <input
-            type='text'
-            placeholder='Search contacts...'
+    <div className='min-h-[calc(100vh-3rem)] flex-1 flex'>
+      <div className='w-72 bg-slate-100'>
+        <div className='p-4 border-b-2 flex flex-row gap-2 items-center justify-center'>
+          <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className='max-w-52 p-2 border-b rounded-lg'
+            placeholder='Search contacts...'
           />
-          <button
-            className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
-            onClick={() => alert('Create functionality not implemented yet')}
-          >
-            New
-          </button>
+          <Link to='/contacts/create'>
+            <Button className='py-1.5'>New</Button>
+          </Link>
         </div>
-        <div className='divide-y'>
+        <div className='px-4 max-h-[calc(100vh-8rem)] divide-y overflow-y-auto'>
           {filteredContacts?.map(({ id, name }) => {
             return (
               <div key={id} className=''>
