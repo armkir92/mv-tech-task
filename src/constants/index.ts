@@ -1,1 +1,1 @@
-export const CONTACTS_API = 'http://localhost:3000/contacts'
+export const CONTACTS_API = import.meta.env.VITE_CONTACTS_API || 'http://localhost:3000/contacts'
